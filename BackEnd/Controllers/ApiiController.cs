@@ -1,12 +1,15 @@
 ﻿using BackEnd.ModelsDto;
 using BackEnd.Services;
+using ClosedXML.Excel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -798,9 +801,41 @@ namespace BackEnd.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult GetByDate([FromUri] DateTime FromDate, [FromUri] DateTime ToDate)
+        public IHttpActionResult GetByDate([FromUri] GetByDateInModel inModel)
         {
-            return Ok("FUCK");
+
+            var products = WorkService.GetProductsByDates(inModel.FromDate, inModel.ToDate);
+
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[3] { new DataColumn("SpecialCode"),
+                                            new DataColumn("Name"),
+                                            new DataColumn("Count") });
+
+            foreach (var item in products)
+            {
+                dt.Rows.Add(item.SpecialCode, item.Name, item.Count);
+            }
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                var stream = new MemoryStream();
+                wb.SaveAs(stream);
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(stream.ToArray())
+                };
+                result.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = "Result.xlsx"
+                };
+                result.Content.Headers.ContentType =new MediaTypeHeaderValue( "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                var response = ResponseMessage(result);
+                
+                return response;
+            }
+
+            return Ok(products);
         }
         
     }

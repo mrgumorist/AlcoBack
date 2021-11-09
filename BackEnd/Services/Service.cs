@@ -960,5 +960,23 @@ namespace BackEnd.Services
                 }
             }
         }
+        public static List<OutProductModel> GetProductsByDates(DateTime dateFrom, DateTime dateTo)
+        {
+            var products = apiContext.ProductsInCheck.AsQueryable();
+            var list = new List<OutProductModel>();
+
+            dateFrom = dateFrom.Date;
+            dateTo=dateTo.AddDays(1).Date;
+
+            list.AddRange(products.Where(x=>x.Count.HasValue&&x.Check.DateCloseOfCheck>=dateFrom&&dateTo >= x.Check.DateCloseOfCheck).GroupBy(x=>x.SpecialCode).Select(
+            g => new OutProductModel()
+            {
+            SpecialCode = g.Key,
+            Count = g.Sum(s => s.Count.Value),
+            Name = g.FirstOrDefault().Name
+            }));
+
+            return list;
+        }
     }
 }
