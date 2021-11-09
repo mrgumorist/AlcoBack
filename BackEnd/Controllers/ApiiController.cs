@@ -694,6 +694,7 @@ namespace BackEnd.Controllers
                 return BadRequest();
             }
         }
+
         [HttpPost]
         public IHttpActionResult GetSalesByDates([FromBody] DatesDto dto)
         {
@@ -794,6 +795,12 @@ namespace BackEnd.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetByDate([FromUri] DateTime FromDate, [FromUri] DateTime ToDate)
+        {
+            return Ok("FUCK");
         }
         
     }
