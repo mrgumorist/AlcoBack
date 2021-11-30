@@ -973,7 +973,8 @@ namespace BackEnd.Services
             {
             SpecialCode = g.Key,
             Count = g.Sum(s => s.Count.Value),
-            Name = g.FirstOrDefault().Name
+            Name = g.FirstOrDefault().Name,
+            Price=g.FirstOrDefault().Price
             }));
 
             return list;

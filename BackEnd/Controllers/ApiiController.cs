@@ -807,13 +807,15 @@ namespace BackEnd.Controllers
             var products = WorkService.GetProductsByDates(inModel.FromDate, inModel.ToDate);
 
             DataTable dt = new DataTable("Grid");
-            dt.Columns.AddRange(new DataColumn[3] { new DataColumn("SpecialCode"),
+            dt.Columns.AddRange(new DataColumn[4] { new DataColumn("SpecialCode"),
                                             new DataColumn("Name"),
-                                            new DataColumn("Count") });
+                                            new DataColumn("Count"),
+                                            new DataColumn("Price")
+            });
 
             foreach (var item in products)
             {
-                dt.Rows.Add(item.SpecialCode, item.Name, item.Count);
+                dt.Rows.Add(item.SpecialCode, item.Name, item.Count, item.Price);
             }
 
             using (XLWorkbook wb = new XLWorkbook())

@@ -10,5 +10,6 @@ namespace BackEnd.ModelsDto
         public string Name { get; set; }
         public string SpecialCode { get; set; }
         public double Count { get; set; } = 0;
+        public double Price { get; set; } = 0;
     }
 }
