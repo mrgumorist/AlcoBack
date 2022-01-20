@@ -969,10 +969,10 @@ namespace BackEnd.Services
             dateTo=dateTo.AddDays(1).Date;
 
             list.AddRange(products.Where(x=>x.Count.HasValue&&x.Check.DateCloseOfCheck>=dateFrom&&dateTo >= x.Check.DateCloseOfCheck).GroupBy(x=>x.SpecialCode).Select(
-            g => new OutProductModel()
+                g => new OutProductModel()
             {
             SpecialCode = g.Key,
-            Count = g.Sum(s => s.Count.Value),
+            Count =  g.Sum(s => (s.IsNumurable.Value? s.Count.Value:s.Massa.Value)),
             Name = g.FirstOrDefault().Name
             }));
 
